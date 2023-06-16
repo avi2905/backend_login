@@ -2,16 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
-
+const cors=require('cors');
 const app = express();
 const port = 3001;
-
+app.use(cors());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
 
+ 
+  
 // create a MySQL connection pool
 const pool = mysql.createPool({
     connectionLimit: 10,
@@ -42,17 +44,17 @@ app.post('/login', (req, res) => {
 
                 if (error) {
                     console.error('Error querying database: ' + error.stack);
-                    return res.status(500).json({ error: 'Internal server error' });
+                    return res.status(500).json({ error: 'Internal server error',status:"notok"});
                 }
 
                 if (results.length === 0) {
-                    return res.status(401).json({ error: 'Invalid credentials' });
+                    return res.status(401).json({ error: 'Invalid credentials',status: "notok"});
                 }
 
                 // generate a JWT token and send it in the response
                 const { employee_id, designation } = results[0];
                 const token = jwt.sign({ employee_id, designation }, 'secret');
-                return res.json({ token });
+                return res.json({ status: "ok", data: token });
             }
         );
     });

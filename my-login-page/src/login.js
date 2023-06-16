@@ -1,50 +1,86 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { Component, useState } from "react";
 
-function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+export default function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  }
+  function handleSubmit(e) {
+    e.preventDefault();
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  }
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    axios.post('http://localhost:3001/login', { username, password })
-      .then(response => {
-        localStorage.setItem('token', response.data.token);
-        window.location.href = '/profile';
-      })
-      .catch(error => {
-        setErrorMessage(error.response.data.error);
+    console.log(username, password);
+    fetch("http://localhost:3001/login", {
+      method: "POST",
+      crossDomain: true,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.status, "userRegister");
+        
+        if (data.status == 'ok') {
+          alert("login successful");
+          window.localStorage.setItem("token", data.data);
+          window.localStorage.setItem("loggedIn", true);
+          console.log("nomnom");
+          window.location.href = "/profile";
+        }
       });
   }
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input type="text" value={username} onChange={handleUsernameChange} />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input type="password" value={password} onChange={handlePasswordChange} />
-        </label>
-        <br />
-        <button type="submit">Login</button>
-        {errorMessage && <p>{errorMessage}</p>}
-      </form>
+    <div className="auth-wrapper">
+      <div className="auth-inner">
+        <form onSubmit={handleSubmit}>
+          <h3>Sign In</h3>
+
+          <div className="mb-3">
+            <label>username</label>
+            <input
+              type="username"
+              className="form-control"
+              placeholder="Enter username"
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label>Password</label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Enter password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <div className="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="customCheck1"
+              />
+              <label className="custom-control-label" htmlFor="customCheck1">
+                Remember me
+              </label>
+            </div>
+          </div>
+
+          <div className="d-grid">
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
-
-export default LoginPage;
