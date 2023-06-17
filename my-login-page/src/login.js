@@ -36,7 +36,7 @@ export default function Login() {
   }
 
   return (
-    <div className="auth-wrapper">
+    <div className="auth-wrapper px-5 py-2">
       <div className="auth-inner">
         <form onSubmit={handleSubmit}>
           <h3>Sign In</h3>
