@@ -3,11 +3,12 @@ import React, { Component, useState } from "react";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    console.log(username, password);
+    console.log(username, password,remember);
     fetch("http://localhost:3001/login", {
       method: "POST",
       crossDomain: true,
@@ -31,6 +32,10 @@ export default function Login() {
           window.localStorage.setItem("loggedIn", true);
           console.log("nomnom");
           window.location.href = "/profile";
+        }
+        if (data.status == 'notok') {
+          alert("Invalid credentials");
+          
         }
       });
   }
@@ -67,6 +72,7 @@ export default function Login() {
                 type="checkbox"
                 className="custom-control-input"
                 id="customCheck1"
+                onChange={(e) => setRemember(e.target.checked)}
               />
               <label className="custom-control-label" htmlFor="customCheck1">
                 Remember me
