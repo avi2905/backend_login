@@ -52,9 +52,11 @@ app.post('/login', (req, res) => {
                 }
 
                 // generate a JWT token and send it in the response
-                const { employee_id, designation } = results[0];
-                const token = jwt.sign({ employee_id, designation }, 'secret');
+                const { employee_id, designation,name} = results[0];
+                const token = jwt.sign({ employee_id, designation,name }, 'secret');
+                
                 return res.json({ status: "ok", data: token });
+                
             }
         );
     });
@@ -83,8 +85,8 @@ function authenticate(req, res, next) {
 
 // define a protected endpoint that requires authentication
 app.get('/profile', authenticate, (req, res) => {
-    const { employee_id, designation } = req.user;
-    return res.json({ employee_id, designation });
+    const { employee_id, designation,name } = req.user;
+    return res.json({ employee_id, designation,name });
 });
 
 // start the server

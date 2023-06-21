@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import Login from "./login";
 import Profile from "./profile";
+import Dash from "./dash";
 
 function App() {
   const isLoggedIn = window.localStorage.getItem("loggedIn");
@@ -19,6 +20,7 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/dash" element={<Dash />} />
         </Routes>
       </div>
     </Router>
