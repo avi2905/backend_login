@@ -86,6 +86,41 @@ app.get('/profile', authenticate, (req, res) => {
     const { employee_id, designation } = req.user;
     return res.json({ employee_id, designation });
 });
+app.post('/attendance', (req, res) => {
+    const {emp_id} = req.body;
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error getting connection: ' + err.stack);
+            return res.status(500).json({ error: 'could not connect to mysql' });
+        }
+
+        // query the database
+        connection.query(
+            'SELECT * FROM attendance WHERE employee_id = ?',
+            [emp_id],
+            (error, results) => {
+                // release the connection back to the pool
+                connection.release();
+
+                if (error) {
+                    console.error('Error querying database: ' + error.stack);
+                    return res.status(500).json({ error: 'Internal server error',status:"notok"});
+                }
+
+                if (results.length === 0) {
+                    return res.status(401).json({ error: 'Invalid credentials',status: "notok"});
+                }
+
+                // generate a JWT token and send it in the response
+                const attrec= results;
+                return res.json(attrec);
+                
+            }
+        );
+    });
+});
+
+
 
 // start the server
 app.listen(port, () => {
